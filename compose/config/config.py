@@ -12,6 +12,8 @@ from collections import namedtuple
 
 import six
 import yaml
+import re
+import urllib
 from cached_property import cached_property
 
 from ..const import COMPOSEFILE_V1 as V1
@@ -984,8 +986,11 @@ def has_uppercase(name):
 
 def load_yaml(filename):
     try:
-        with open(filename, 'r') as fh:
-            return yaml.safe_load(fh)
+        if re.match('^http', filename) or re.match('./http', filename):
+            return yaml.safe_load(urllib.urlopen(filename[2:]))
+        else:
+            with open(filename, 'r') as fh:
+                return yaml.safe_load(fh)
     except (IOError, yaml.YAMLError) as e:
         error_name = getattr(e, '__module__', '') + '.' + e.__class__.__name__
         raise ConfigurationError(u"{}: {}".format(error_name, e))
