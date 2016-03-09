@@ -988,9 +988,6 @@ def load_yaml(filename):
     try:
         if filename.startswith('./http'):
             return yaml.safe_load(urllib.urlopen(filename[len('./'):]))
-        elif filename is './-':
-            with sys.stdin as fh:
-                return yaml.safe_load(fh)
         else:
             with open(filename, 'r') as fh:
                 return yaml.safe_load(fh)
