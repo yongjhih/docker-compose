@@ -986,8 +986,11 @@ def has_uppercase(name):
 
 def load_yaml(filename):
     try:
-        if re.match('^http', filename) or re.match('./http', filename):
+        if re.match('^http', filename) or re.match('^./http', filename):
             return yaml.safe_load(urllib.urlopen(filename[2:]))
+        if re.match('^-', filename) or re.match('^./-', filename):
+            with sys.stdin as fh:
+                return yaml.safe_load(fh)
         else:
             with open(filename, 'r') as fh:
                 return yaml.safe_load(fh)
